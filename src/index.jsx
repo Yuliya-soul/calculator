@@ -25,7 +25,7 @@ Promise.resolve(InfoCard)
 var returnObj = JSON.parse(localStorage.getItem("myKey"));
 
 const info={
-  MSRP: returnObj.MSRP,
+  MSRP: 35000,
   taxes:220104,
 };
 
