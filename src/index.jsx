@@ -10,26 +10,25 @@ import {InfoCard} from'./InfoCard';
 import Async from 'react-async';
 
 
-
 function demoAsyncCall() {
   return new Promise((resolve) => setTimeout(() => resolve(), 2500));
 }
-async function start(){
-await Promise.resolve(InfoCard);
+async function start (){
 
+  await Promise(InfoCard)
 }
 
+const CheckDownPayment=MSRP/4;   
+
+
 const info={MSRP: 35000,
-      VehicleName: "Toyota",
+      VehicleName: "Toyota Solara",
       MonthlyPayment: 368,
       taxes:220104,
       DealerPhoneNumber: "617-564-3254",
-      DealerRating:100};
+      DealerRating:'7/10'};
 
-const MSRP=35000;
-const CheckDownPayment=MSRP/4;
-
-
+      var MSRP=info.MSRP;
 
 const scaleNames = {
   c: 'Down Payment',
@@ -53,17 +52,17 @@ function CheckDownPaymentVerdict(props) {
   if ((props.downPayment <= CheckDownPayment)&&(props.downPayment >=0)){
     return <p></p>;
   }
-  return <p>Change the value.It can’t be greater than {CheckDownPayment} $ or less 0 or a letter or a sign</p>;
+  return <p>Change the value.It can’t be greater than {CheckDownPayment} $ or less then 0</p>;
 }
 
 function CheckDownTradeInVerdict(props) {
   if ((props.tradeIn <= CheckDownPayment)&&(props.tradeIn >=0)){
     return <p></p>;
   }
-  return <p>Change the value.It can’t be greater than {CheckDownPayment} $ or less 0</p>;
+  return <p>Change the value.It can’t be greater than {CheckDownPayment} $ or less then 0</p>;
 }
 
-class TemperatureInput extends React.Component {
+class SelectInput extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -79,14 +78,14 @@ class TemperatureInput extends React.Component {
     return (
       <fieldset>
         <legend> {scaleNames[scale]}:</legend>
-      <input  value={temperature} onChange={this.handleChange} /> <div className="btn-search1"> <div class="speech" id="speech">$</div></div> 
+      <input  value={temperature} onChange={this.handleChange} /> <div className="btn-search1"> <div className="speech" id="speech">$</div></div> 
       </fieldset>
  
     );
   }
 }
 
-class TemperatureInput1 extends React.Component {
+class SelectInput1 extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -102,7 +101,7 @@ class TemperatureInput1 extends React.Component {
     return (
       <fieldset>
         <legend> {scaleNames[scale]}:</legend>
-         <input  value={temperature} onChange={this.handleChange} /> 
+         <input  value={temperature} onChange={this.handleChange}  /> 
       </fieldset>
  
     );
@@ -128,13 +127,11 @@ class LoginControl extends React.Component {
   render() {
     const isLoggedIn = this.state.isLoggedIn;
     let button;
-
     if (isLoggedIn) {
       button = <LogoutButton onClick={this.handleLogoutClick} />;
     } else {
       button = <LoginButton onClick={this.handleLoginClick} />;
     }
-
     return (
       <div>
         <Greeting isLoggedIn={isLoggedIn} />
@@ -149,15 +146,13 @@ class MileagesForm extends React.Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
   }
-
   handleChange(e) {
     this.props.onTemperatureChange(e.target.value);
   }
   render() {
     const mileages = this.props.mileages;
     return (
-    
-        <label>
+            <label>
         <h3>Mileages:</h3>  
           <select value={mileages} onChange={this.handleChange}>
             <option value="10000">10 000</option>
@@ -222,11 +217,11 @@ class  CreditScoreForm extends React.Component {
 
 
 function UserGreeting(props) {
-  return <h3 className="results">Welcome in leasing calculator</h3>;
+  return <h3 className="results">Welcome to leasing calculator</h3>;
 }
 
 function GuestGreeting(props) {
-  return <h3 className="results">Welcome in loan calculator</h3>;
+  return <h3 className="results">Welcome to loan calculator</h3>;
 }
 
 function Greeting(props) {
@@ -253,7 +248,7 @@ function LogoutButton(props) {
   );
 }
 
-function toFahrenheit(CreditScoreChange) {
+function toScoreValue(CreditScoreChange) {
 let CreditScoreValue
   if(CreditScoreChange>=750)
  { CreditScoreValue=0.95 }
@@ -266,52 +261,21 @@ let CreditScoreValue
    return CreditScoreValue
 }
 function LeaseCounter(tradeIn,downPayment,mileages,termlease,creditScoreLease) {
-  let CreditScoreValue
-  if(creditScoreLease>=750)
- { CreditScoreValue=0.95 }
-  if((creditScoreLease>=700)&(creditScoreLease<750))
- {CreditScoreValue= 1} ;
- if((creditScoreLease>=640)&(creditScoreLease<700))
- {CreditScoreValue= 1.05} ;
- if((creditScoreLease<640))
- {CreditScoreValue= 1.2} ;
+ let CreditScoreValue=toScoreValue(creditScoreLease);
  let  result=Math.round((MSRP - tradeIn - downPayment) * mileages / 10000 / termlease * CreditScoreValue);
  if ((Number.isNaN(result))||(result<0)) {
   return result='check input values 0';
 }
-
   return result
 }
-function LoanCounter(tradeIn,downPayment,term,fahrenheit,apr){
- let  result1=Math.round((MSRP-tradeIn-downPayment)/term*(fahrenheit*apr)/100);
+function LoanCounter(tradeIn,downPayment,term,scoreValue,apr){
+ let  result1=Math.round((MSRP-tradeIn-downPayment)/term*(scoreValue*apr)/100);
  if ((Number.isNaN(result1))||(result1<0)) {
   return result1='check input values 0';
 }
 return result1
 }
-function Hide(isLoggedIn){
-  let result
-  if(isLoggedIn){ result='hide'}
-  else{result='show'}
-  return result
-}
-function Show(isLoggedIn){
-  let result
-  if(!isLoggedIn){ result='show'}
-  else{result='hide'}
-  return result
-}
-function WarningBanner(props) {
-  if (!props.warn) {
-    return null;
-  }
 
-  return (
-    <div className="warning">
-      Warning!
-    </div>
-  );
-}
 function WarningBanner1(isLoggedIn) {
   if (isLoggedIn) {
     return null;
@@ -323,16 +287,8 @@ function WarningBanner2(isLoggedIn) {
   if (!isLoggedIn) {
     return null;
   }
-
   return 'warning'
 }
-
-
-
-
-
-
-
 
 
 class Calculator extends React.Component {
@@ -344,7 +300,7 @@ class Calculator extends React.Component {
     this.handleZipChange = this.handleZipChange.bind(this);
     this.handleAprChange = this.handleAprChange.bind(this);
     this.handleCreditScoreChange = this.handleCreditScoreChange.bind(this);
-    this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+    this.handleScoreValueChange = this.handleScoreValueChange.bind(this);
     this.handleMiliagesChange= this.handleMiliagesChange.bind(this);
     this.handleTermleaseChange= this.handleTermleaseChange.bind(this);
     this.handleCreditScoreLeaseChange= this.handleCreditScoreLeaseChange.bind(this);
@@ -376,7 +332,8 @@ class Calculator extends React.Component {
       showWarning: true,
       hide:'hide',
       isLoggedIn: false,
-      show:'show'
+      show:'show',
+      mochData:[]
     };
     
   }
@@ -386,7 +343,7 @@ class Calculator extends React.Component {
     {this.setState({scale: 'c', downPayment});}
   
   }
-  handleFahrenheitChange(creditSV) {
+  handleScoreValueChange(creditSV) {
     this.setState({scale: 'f', creditSV});
   }
  
@@ -408,7 +365,6 @@ handleAprClick(apr) {
   this.setState({scale: 'a',apr});
 }
 
-
 handleCreditScoreChange(CreditScoreChange) {
   this.setState({scale: 'a',CreditScoreChange});
 }
@@ -416,15 +372,7 @@ handleCreditScoreChangeValue(creditSV) {
   this.setState({scale: 'a',creditSV});
 }
 
-
-componentDidMount() {
-  // this simulates an async action, after which the component will render the content
-  demoAsyncCall().then(() => this.setState({ loading: false }));
-
-
-}
-
-handleFahrenheitChange(temperature) {
+handleScoreValueChange(temperature) {
   this.setState({scale: 'f', temperature});
 }
 
@@ -466,10 +414,15 @@ handleLoginClick() {
 handleLogoutClick() {
   this.setState({isLoggedIn: false});
 }
+componentDidMount() {
+  // this simulates an async action, after which the component will render the content
+  demoAsyncCall().then(() => this.setState({ loading: false }));
+
+
+}
 
   render() {
-    
-    const scale = this.state.scale;
+  
     const downPayment = this.state.downPayment;
     const tradeIn=this.state.tradeIn;
     const zipCode=this.state.zipCode;
@@ -477,11 +430,9 @@ handleLogoutClick() {
     const term=this.state.term;
     const CreditScoreChange=this.state.CreditScoreChange;
     const { loading } = this.state;
-    const infoCardData=this.state.infoCardData;
     const mileages=this.state.mileages;
     const termlease=this.state.termlease;
     const creditScoreLease=this.state.creditScoreLease;
-  
     const isLoggedIn=this.state.isLoggedIn;
  
     let button;
@@ -496,61 +447,57 @@ handleLogoutClick() {
       button = <LoginButton onClick={this.handleLoginClick} />;
     }
 
-   
-
-     const fahrenheit = tryConvert(CreditScoreChange, toFahrenheit);
+    const scoreValue = tryConvert(CreditScoreChange, toScoreValue);
     const leasingResult= LeaseCounter(tradeIn,downPayment,mileages,termlease,creditScoreLease); 
-    const loanResult= LoanCounter(tradeIn,downPayment,term,fahrenheit,apr);
+    const loanResult= LoanCounter(tradeIn,downPayment,term,scoreValue,apr);
     const hide=WarningBanner1(isLoggedIn);
     const show=WarningBanner2(isLoggedIn);
 
     const loadUsers = () =>
      fetch("https://ipinfo.io/json?token=1db77c7739473f")
        .then(res => (res.ok ? res : Promise.reject(res)))
-       .then(res => res.json())
-      
-    const loadUsers1 =start().then()
-      
-    return (  
+       .then(res => res.json());
+    
+        
+  return (  
       <div  className="container ">
           <Async promiseFn={loadUsers}>
               <Async.Loading>Loading...</Async.Loading>
               <Async.Fulfilled>
-                
-                {data => {
+                  {data => {
                   return (
                   <div>
                       <h3>Your post code {data.postal}</h3>  
                     </div>
                   )
                 }}
+                
               </Async.Fulfilled>
               <Async.Rejected>
                 {error => `Something went wrong: ${error.message}`}
               </Async.Rejected>
          </Async>
 
-  
     <div>
         <Greeting isLoggedIn={isLoggedIn} />
         {button}
-        <TemperatureInput
+        <SelectInput
               scale="c"
               downPayment={downPayment}
               onTemperatureChange={this.handleDownPaymentChange} />
             <CheckDownPaymentVerdict
               downPayment={parseFloat(downPayment)} />
-            <TemperatureInput
+            <SelectInput
               scale="t"
               tradeIn={tradeIn}
               onTemperatureChange={this.handleTradingChange} />
             <CheckDownTradeInVerdict
               tradeIn={parseFloat(tradeIn)} />
-            <TemperatureInput1
+            <SelectInput1
               scale="z"
               zipCode={zipCode}
               onTemperatureChange={this.handleZipChange} /> 
-            <TemperatureInput1
+            <SelectInput1
               scale="a"
               apr={apr}
               onTemperatureChange={this.handleAprChange} /> 
@@ -568,9 +515,6 @@ handleLogoutClick() {
               </div>
              
             <div>
-
-        
-
             <br/>
             <div className= {show} > 
                 <h3>Terms</h3><br/>
@@ -596,7 +540,7 @@ handleLogoutClick() {
                 <br/>
                 <br/>
                   <div className="results">Monthly payment loan:  {loanResult} $</div>
-             <div className="counters">  (({MSRP}-{tradeIn}-{downPayment})/{term})*{fahrenheit}*{apr}/100 ;</div> 
+             <div className="counters">  (({MSRP}-{tradeIn}-{downPayment})/{term})*{scoreValue}*{apr}/100 ;</div> 
             </div>
       </div>
 
@@ -622,9 +566,6 @@ handleLogoutClick() {
     );
   }
 }
-
-
-
 
 render(
 
