@@ -6,29 +6,31 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap.css'; 
 import 'bootstrap/dist/css/bootstrap-theme.css';
 import PropTypes from 'prop-types'; 
-import {InfoCard} from'./InfoCard';
+import {InfoCard} from'./components/InfoCard';
 import Async from 'react-async';
 
 
 function demoAsyncCall() {
   return new Promise((resolve) => setTimeout(() => resolve(), 2500));
 }
-async function start (){
 
-  await Promise(InfoCard)
-}
+Promise.resolve(InfoCard)  
+.then(res => {
+  var serialObj = JSON.stringify(res[0]); 
+  localStorage.setItem("myKey", serialObj)
+ 
+})
+.catch(error => console.log(error));
 
-const CheckDownPayment=MSRP/4;   
+var returnObj = JSON.parse(localStorage.getItem("myKey"));
 
+const info={
+  MSRP: returnObj.MSRP,
+  taxes:220104,
+};
 
-const info={MSRP: 35000,
-      VehicleName: "Toyota Solara",
-      MonthlyPayment: 368,
-      taxes:220104,
-      DealerPhoneNumber: "617-564-3254",
-      DealerRating:'7/10'};
-
-      var MSRP=info.MSRP;
+const MSRP=info.MSRP;
+const CheckDownPayment=MSRP/4; 
 
 const scaleNames = {
   c: 'Down Payment',
@@ -108,39 +110,6 @@ class SelectInput1 extends React.Component {
   }
 }
 
-class LoginControl extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleLoginClick = this.handleLoginClick.bind(this);
-    this.handleLogoutClick = this.handleLogoutClick.bind(this);
-    this.state = {isLoggedIn: false};
-  }
-
-  handleLoginClick() {
-    this.setState({isLoggedIn: true});
-  }
-
-  handleLogoutClick() {
-    this.setState({isLoggedIn: false});
-  }
-
-  render() {
-    const isLoggedIn = this.state.isLoggedIn;
-    let button;
-    if (isLoggedIn) {
-      button = <LogoutButton onClick={this.handleLogoutClick} />;
-    } else {
-      button = <LoginButton onClick={this.handleLoginClick} />;
-    }
-    return (
-      <div>
-        <Greeting isLoggedIn={isLoggedIn} />
-        {button}
-      </div>
-    );
-  }
-}
-
 class MileagesForm extends React.Component {
   constructor(props) {
     super(props);
@@ -200,7 +169,7 @@ class  CreditScoreForm extends React.Component {
     const creditScoreLease = this.props.creditScoreLease;
     return (
         <label>
-        <h3>creditScoreLease:</h3>  
+        <h3>Credit Score:</h3>  
           <select value={creditScoreLease} onChange={this.handleChange}>
             <option value="600">600</option>
             <option value="650">650</option>
@@ -273,14 +242,13 @@ function LoanCounter(tradeIn,downPayment,term,scoreValue,apr){
  if ((Number.isNaN(result1))||(result1<0)) {
   return result1='check input values 0';
 }
-return result1
+  return result1
 }
 
 function WarningBanner1(isLoggedIn) {
   if (isLoggedIn) {
-    return null;
+  return null;
   }
-
   return 'warning'
 }
 function WarningBanner2(isLoggedIn) {
@@ -290,9 +258,7 @@ function WarningBanner2(isLoggedIn) {
   return 'warning'
 }
 
-
 class Calculator extends React.Component {
-
   constructor(props) {
     super(props);
     this.handleDownPaymentChange = this.handleDownPaymentChange.bind(this);
@@ -452,32 +418,15 @@ componentDidMount() {
     const loanResult= LoanCounter(tradeIn,downPayment,term,scoreValue,apr);
     const hide=WarningBanner1(isLoggedIn);
     const show=WarningBanner2(isLoggedIn);
-
+   
     const loadUsers = () =>
-     fetch("https://ipinfo.io/json?token=1db77c7739473f")
-       .then(res => (res.ok ? res : Promise.reject(res)))
-       .then(res => res.json());
-    
-        
+    fetch("https://ipinfo.io/json?token=1db77c7739473f")
+      .then(res => (res.ok ? res : Promise.reject(res)))
+      .then(res => res.json());
+      
   return (  
       <div  className="container ">
-          <Async promiseFn={loadUsers}>
-              <Async.Loading>Loading...</Async.Loading>
-              <Async.Fulfilled>
-                  {data => {
-                  return (
-                  <div>
-                      <h3>Your post code {data.postal}</h3>  
-                    </div>
-                  )
-                }}
-                
-              </Async.Fulfilled>
-              <Async.Rejected>
-                {error => `Something went wrong: ${error.message}`}
-              </Async.Rejected>
-         </Async>
-
+         <div></div> 
     <div>
         <Greeting isLoggedIn={isLoggedIn} />
         {button}
@@ -505,15 +454,31 @@ componentDidMount() {
       </div>
 
             <div className="CardInfo results">
-          <h2 className="results">Card Info:</h2> <br/>
-                MRSP: {info.MSRP} $ <br/>
-                vehicle name: "{info.VehicleName}"<br/>
-                monthly payment:{info.MonthlyPayment} $<br/>
-                taxes: {zipCode.split('').map(num => num * 11)} <br/>
-                dealer phone number:{info.DealerPhoneNumber} <br/>
-                dealer rating:{info.DealerRating}
+                 <div id="list"></div>
+                  <div className="CardInfo ">
+                  <h2 className="results">Card Info:</h2> <br/>
+                  MRSP: {returnObj.MSRP}  <br/>
+                  vehicle name: "{returnObj.VehicleName}"<br/>
+                  monthly payment:{returnObj.MonthlyPayment} $<br/>
+                  dealer phone number:{returnObj.DealerPhoneNumber} <br/>
+                  dealer rating:{returnObj.DealerRating}
+                  </div>
+                  taxes: {zipCode.split('').map(num => num * 11)} <br/>
+                  <Async promiseFn={loadUsers}>
+              <Async.Loading>Loading...</Async.Loading>
+              <Async.Fulfilled>
+                  {data => {
+                  return (
+                    <h4>Your post code {data.postal}</h4>  
+                 )
+                }}
+                
+              </Async.Fulfilled>
+              <Async.Rejected>
+                {error => `Something went wrong: ${error.message}`}
+              </Async.Rejected>
+         </Async>
               </div>
-             
             <div>
             <br/>
             <div className= {show} > 
@@ -545,7 +510,7 @@ componentDidMount() {
       </div>
 
       <div className={hide}>
-          <MileagesForm mileages={mileages} onTemperatureChange={this.handleMiliagesChange}  /><br/>
+           <MileagesForm mileages={mileages} onTemperatureChange={this.handleMiliagesChange}  /><br/>
            <TermsLeaseForm termlease={termlease} onTemperatureChange1={this.handleTermleaseChange}  /><br/>
            <CreditScoreForm creditScoreLease={creditScoreLease} onTemperatureChange1={this.handleCreditScoreLeaseChange}  /><br/>
            <div className="results">Monthly payment lease: {leasingResult} $</div>
@@ -553,16 +518,12 @@ componentDidMount() {
             mileages{mileages} / 10000 / termlease{termlease} * CreditScoreValue)
         </div>   
       </div>
-  
-
-      <div>
+     <div>
        
-      </div>
-      
     </div>
-
-
       
+  </div>
+
     );
   }
 }
