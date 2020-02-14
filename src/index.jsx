@@ -26,7 +26,12 @@ var returnObj = JSON.parse(localStorage.getItem("myKey"));
 
 const info={
   MSRP: 35000,
-  taxes:220104,
+       VehicleName: "Toyota",
+      MonthlyPayment: 368,
+      taxes:100,
+      DealerPhoneNumber: "617-564-3254",
+      DealerRating:100,
+ 
 };
 
 const MSRP=info.MSRP;
@@ -457,11 +462,11 @@ componentDidMount() {
                  <div id="list"></div>
                   <div className="CardInfo ">
                   <h2 className="results">Card Info:</h2> <br/>
-                  MRSP: {returnObj.MSRP}  <br/>
-                  vehicle name: "{returnObj.VehicleName}"<br/>
-                  monthly payment:{returnObj.MonthlyPayment} $<br/>
-                  dealer phone number:{returnObj.DealerPhoneNumber} <br/>
-                  dealer rating:{returnObj.DealerRating}
+                  MRSP: {info.MSRP}  <br/>
+                  vehicle name: "{info.VehicleName}"<br/>
+                  monthly payment:{info.MonthlyPayment} $<br/>
+                  dealer phone number:{info.DealerPhoneNumber} <br/>
+                  dealer rating:{info.DealerRating}
                   </div>
                   taxes: {zipCode.split('').map(num => num * 11)} <br/>
                   <Async promiseFn={loadUsers}>
